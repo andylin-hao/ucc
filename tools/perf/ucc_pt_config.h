@@ -90,6 +90,7 @@ struct ucc_pt_benchmark_config {
     bool               full_print;
     int                root;
     int                root_shift;
+    bool               debug;
 };
 
 struct ucc_pt_config {

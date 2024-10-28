@@ -166,6 +166,8 @@ typedef enum ucc_memory_type {
     UCC_MEMORY_TYPE_CUDA_MANAGED, /*!< NVIDIA CUDA managed memory */
     UCC_MEMORY_TYPE_ROCM,         /*!< AMD ROCM memory */
     UCC_MEMORY_TYPE_ROCM_MANAGED, /*!< AMD ROCM managed system memory */
+    UCC_MEMORY_TYPE_MACA,         /**< Metax GPU memory */
+    UCC_MEMORY_TYPE_MACA_MANAGED, /**< Metax GPU managed/unified memory */
     UCC_MEMORY_TYPE_LAST,
     UCC_MEMORY_TYPE_UNKNOWN = UCC_MEMORY_TYPE_LAST
 } ucc_memory_type_t;
@@ -2024,6 +2026,7 @@ typedef enum ucc_ee_type {
     UCC_EE_CUDA_STREAM = UCC_EE_FIRST,
     UCC_EE_CPU_THREAD,
     UCC_EE_ROCM_STREAM,
+    UCC_EE_MACA_STREAM,
     UCC_EE_LAST,
     UCC_EE_UNKNOWN = UCC_EE_LAST
 } ucc_ee_type_t;

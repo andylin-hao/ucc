@@ -29,6 +29,7 @@ ucc_pt_config::ucc_pt_config() {
     bench.n_bufs         = UCC_PT_DEFAULT_N_BUFS;
     bench.root           = 0;
     bench.root_shift     = 0;
+    bench.debug          = 0;
     comm.mt              = bench.mt;
 }
 
@@ -62,6 +63,8 @@ const std::map<std::string, ucc_memory_type_t> ucc_pt_memtype_map = {
     {"cuda", UCC_MEMORY_TYPE_CUDA},
     {"rocm", UCC_MEMORY_TYPE_ROCM},
     {"cuda-mng", UCC_MEMORY_TYPE_CUDA_MANAGED},
+    {"maca", UCC_MEMORY_TYPE_MACA},
+    {"maca-mng", UCC_MEMORY_TYPE_MACA_MANAGED}
 };
 
 const std::map<std::string, ucc_datatype_t> ucc_pt_datatype_map = {
@@ -90,7 +93,7 @@ ucc_status_t ucc_pt_config::process_args(int argc, char *argv[])
     int c;
     ucc_status_t st;
 
-    while ((c = getopt(argc, argv, "c:b:e:d:m:n:w:o:N:r:S:iphFT")) != -1) {
+    while ((c = getopt(argc, argv, "c:b:e:d:m:n:w:o:N:r:S:iphFTs")) != -1) {
         switch (c) {
             case 'c':
                 if (ucc_pt_op_map.count(optarg) == 0) {
@@ -167,6 +170,9 @@ ucc_status_t ucc_pt_config::process_args(int argc, char *argv[])
                 break;
             case 'F':
                 bench.full_print = true;
+                break;
+            case 's':
+                bench.debug = true;
                 break;
             case 'h':
             default:

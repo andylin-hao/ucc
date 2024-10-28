@@ -95,3 +95,5 @@ tools/info/ucc_info
 tools/perf/ucc_perftest
 modules
 
+.cache
+compile_commands.json

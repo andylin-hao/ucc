@@ -1,0 +1,25 @@
+CompileFlags:
+  Add:
+    [
+      '--cuda-path=/opt/maca/tools/cu-bridge',
+      -I/opt/maca-2.23.0.1018/tools/cu-bridge/include,
+      -ferror-limit=0,
+    ]
+  Remove:
+    [
+      "-gencode=arch=compute_52,code=sm_52",
+      "-gencode=arch=compute_60,code=sm_60",
+      "-gencode=arch=compute_61,code=sm_61",
+      "-gencode=arch=compute_61,code=compute_61",
+      "-gencode=arch=compute_70,code=sm_70",
+      "-gencode=arch=compute_70,code=compute_70",
+      "-gencode=arch=compute_75,code=sm_75",
+      "-gencode=arch=compute_80,code=sm_80",
+      "-gencode=arch=compute_80,code=compute_80",
+      "-gencode=arch=compute_86,code=sm_86",
+      "-gencode=arch=compute_86,code=compute_86",
+      "-gencode=arch=compute_90,code=sm_90",
+      "-gencode=arch=compute_90,code=compute_90",
+      --compiler-options,
+      '-fno-rtti,-fno-exceptions',
+    ]

@@ -19,6 +19,11 @@ mc_dirs += components/mc/rocm
 ec_dirs += components/ec/rocm
 endif
 
+if HAVE_MACA
+mc_dirs += components/mc/maca
+ec_dirs += components/ec/maca
+endif
+
 SUBDIRS = . $(cl_dirs) $(mc_dirs) $(ec_dirs)
 
 include components/tl/makefile.am

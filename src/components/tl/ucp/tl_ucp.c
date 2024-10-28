@@ -5,6 +5,7 @@
  */
 
 #include "tl_ucp.h"
+#include "ucc/api/ucc.h"
 #include "utils/ucc_malloc.h"
 #include "components/mc/ucc_mc.h"
 #include "components/mc/base/ucc_mc_base.h"
@@ -291,6 +292,8 @@ ucs_memory_type_t ucc_memtype_to_ucs[UCC_MEMORY_TYPE_LAST + 1] = {
     [UCC_MEMORY_TYPE_CUDA_MANAGED] = UCS_MEMORY_TYPE_CUDA_MANAGED,
     [UCC_MEMORY_TYPE_ROCM]         = UCS_MEMORY_TYPE_ROCM,
     [UCC_MEMORY_TYPE_ROCM_MANAGED] = UCS_MEMORY_TYPE_ROCM_MANAGED,
+    [UCC_MEMORY_TYPE_MACA]         = UCS_MEMORY_TYPE_MACA,
+    [UCC_MEMORY_TYPE_MACA_MANAGED] = UCS_MEMORY_TYPE_MACA_MANAGED,
     [UCC_MEMORY_TYPE_UNKNOWN]      = UCS_MEMORY_TYPE_UNKNOWN
 };
 

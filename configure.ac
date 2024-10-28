@@ -152,6 +152,7 @@ AS_IF([test "x$with_docs_only" = xyes],
      AM_CONDITIONAL([HAVE_UCX], [false])
      AM_CONDITIONAL([HAVE_CUDA], [false])
      AM_CONDITIONAL([HAVE_ROCM], [false])
+     AM_CONDITIONAL([HAVE_MACA], [false])
      AM_CONDITIONAL([HAVE_HIP], [false])
      AM_CONDITIONAL([HAVE_NVML], [false])
      AM_CONDITIONAL([HAVE_MPI], [false])
@@ -173,6 +174,7 @@ AS_IF([test "x$with_docs_only" = xyes],
      m4_include([config/m4/nccl.m4])
      m4_include([config/m4/rocm.m4])
      m4_include([config/m4/rccl.m4])
+     m4_include([config/m4/maca.m4])
      m4_include([config/m4/sharp.m4])
      m4_include([config/m4/mpi.m4])
      m4_include([config/m4/ibverbs.m4])
@@ -204,6 +206,9 @@ AS_IF([test "x$with_docs_only" = xyes],
      if test $rocm_happy = "yes"; then
          mc_modules="${mc_modules}:rocm"
      fi
+
+     CHECK_MACA
+     AC_MSG_RESULT([MACA support: $maca_happy; $MACA_CPPFLAGS $MACA_LDFLAGS])
 
      CHECK_GTEST
      AC_MSG_RESULT([GTEST support: $gtest_happy])
@@ -237,6 +242,9 @@ AC_CONFIG_FILES([
                  src/components/mc/rocm/Makefile
                  src/components/ec/rocm/Makefile
                  src/components/ec/rocm/kernel/Makefile
+                 src/components/mc/maca/Makefile
+                 src/components/ec/maca/Makefile
+                 src/components/ec/maca/kernel/Makefile
                  test/mpi/Makefile
                  test/gtest/Makefile
                  tools/info/Makefile
@@ -270,6 +278,9 @@ AC_MSG_NOTICE([             Gtest:   ${gtest_enable}])
 AC_MSG_NOTICE([        MC modules:   <$(echo ${mc_modules}|tr ':' ' ') >])
 AC_MSG_NOTICE([        TL modules:   <$(echo ${tl_modules}|tr ':' ' ') >])
 AC_MSG_NOTICE([      TLCP modules:   <$(echo ${tlcp_modules}|tr ':' ' ') >])
+AS_IF([test "x$maca_happy" = "xyes"],[
+AC_MSG_NOTICE([       MACA is enabled      ])
+])
 AS_IF([test "x$enable_profiling" = xyes],[
 AC_MSG_NOTICE([ Profiling modules:   <$(echo ${prof_modules}|tr ':' ' ') >])
 ])

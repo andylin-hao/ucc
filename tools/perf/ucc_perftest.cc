@@ -14,6 +14,8 @@ int main(int argc, char *argv[])
     ucc_status_t st;
 
     pt_config.process_args(argc, argv);
+    while (pt_config.bench.debug)
+        sleep(1);
     ucc_pt_cuda_init();
     ucc_pt_rocm_init();
     try {
