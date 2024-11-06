@@ -286,6 +286,11 @@ ucc_status_t ucc_tl_ucp_team_get_scores(ucc_base_team_t   *tl_team,
 
 UCC_TL_IFACE_DECLARE(ucp, UCP);
 
+#ifndef HAVE_MACA
+#define UCS_MEMORY_TYPE_MACA         UCS_MEMORY_TYPE_UNKNOWN
+#define UCS_MEMORY_TYPE_MACA_MANAGED UCS_MEMORY_TYPE_UNKNOWN
+#endif
+
 ucs_memory_type_t ucc_memtype_to_ucs[UCC_MEMORY_TYPE_LAST + 1] = {
     [UCC_MEMORY_TYPE_HOST]         = UCS_MEMORY_TYPE_HOST,
     [UCC_MEMORY_TYPE_CUDA]         = UCS_MEMORY_TYPE_CUDA,
