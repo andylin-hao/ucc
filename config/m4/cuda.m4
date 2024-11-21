@@ -3,7 +3,7 @@
 # See file LICENSE for terms.
 #
 
-CUDA_MIN_REQUIRED_MAJOR=11
+CUDA_MIN_REQUIRED_MAJOR=10
 CUDA_MIN_REQUIRED_MINOR=0
 
 ARCH7="-gencode=arch=compute_52,code=sm_52"
@@ -75,36 +75,22 @@ AS_IF([test "x$cuda_checked" != "xyes"],
         # Check nvml library
         AS_IF([test "x$cuda_happy" = "xyes" -a "x$nvml_happy" = "xyes"],
               [AC_CHECK_LIB([nvidia-ml], [nvmlInit_v2],
-                            [NVML_LIBS="-lnvidia-ml"],
+                            [NVML_LIBS="-lnvidia-ml -ldl"],
                             [AS_IF([test "x$with_cuda" != "xguess"],
                                    [AC_MSG_WARN([libnvidia-ml not found. Install appropriate nvidia-driver package])])
-                             nvml_happy="no"])])
-        AS_IF([test "x$cuda_happy" = "xyes" -a "x$nvml_happy" = "xyes"],
-              [AC_CHECK_DECL([nvmlDeviceGetNvLinkRemoteDeviceType],
-                             [AC_CHECK_LIB([nvidia-ml], [nvmlDeviceGetNvLinkRemoteDeviceType],
-                                           [AC_DEFINE([HAVE_NVML_REMOTE_DEVICE_TYPE],
-                                                       1,
-                                                      ["Use nvmlDeviceGetNvLinkRemoteDeviceType"])],
-                                           [])],
-                             [],
-                             [[#include <nvml.h>]])])
+                             nvml_happy="no"], [-ldl])])
+
         AC_CHECK_SIZEOF(cuFloatComplex,,[#include <cuComplex.h>])
         AC_CHECK_SIZEOF(cuDoubleComplex,,[#include <cuComplex.h>])
 
          # Check for NVCC
          AC_ARG_VAR(NVCC, [NVCC compiler command])
          AS_IF([test "x$cuda_happy" = "xyes"],
-               [AC_PATH_PROG([NVCC], [nvcc], [notfound], [$PATH:$check_cuda_dir/bin])])
+               [AC_PATH_PROG([NVCC], [clang++], [notfound], [$PATH:$check_cuda_dir/bin])])
          AS_IF([test "$NVCC" = "notfound"], [cuda_happy="no"])
-         AS_IF([test "x$cuda_happy" = "xyes"],
-               [CUDA_MAJOR_VERSION=`$NVCC --version | grep release | sed 's/.*release //' | sed 's/\,.*//' |  cut -d "." -f 1`
-                CUDA_MINOR_VERSION=`$NVCC --version | grep release | sed 's/.*release //' | sed 's/\,.*//' |  cut -d "." -f 2`
-                AC_MSG_RESULT([Detected CUDA version: $CUDA_MAJOR_VERSION.$CUDA_MINOR_VERSION])
-                AS_IF([test $CUDA_MAJOR_VERSION -lt $CUDA_MIN_REQUIRED_MAJOR],
-                      [AC_MSG_WARN([Minimum required CUDA version: $CUDA_MIN_REQUIRED_MAJOR.$CUDA_MIN_REQUIRED_MINOR])
-                       cuda_happy=no])])
          AS_IF([test "x$enable_debug" = xyes],
-               [NVCC_CFLAGS="$NVCC_CFLAGS -O0 -g"],
+               [NVCC_CFLAGS="-std=c++11 -Wall -I$check_cuda_dir/include --cuda-path=$check_cuda_dir -Wno-unknown-cuda-version --cuda-gpu-arch=ivcore11"]
+               [NVCC_CFLAGS="$NVCC_CFLAGS -g"],
                [NVCC_CFLAGS="$NVCC_CFLAGS -O3 -g -DNDEBUG"])
          AS_IF([test "x$cuda_happy" = "xyes"],
                [AS_IF([test "x$with_nvcc_gencode" = "xdefault"],

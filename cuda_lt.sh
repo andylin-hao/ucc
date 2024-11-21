@@ -32,7 +32,7 @@ if [[ "$tmpcmd" == *"amdclang"* ]]; then
 elif [[ "$tmpcmd" == *"hipcc"* ]]; then
   cmd="${@:3} -fPIC -o ${pic_filepath}"
 else
-  cmd="${@:3} -Xcompiler -fPIC -o ${pic_filepath}"
+  cmd="${@:3} -fPIC -o ${pic_filepath}"
 fi
 echo $cmd
 $cmd

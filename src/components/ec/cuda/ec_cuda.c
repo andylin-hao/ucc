@@ -153,29 +153,34 @@ static ucc_mpool_ops_t ucc_ec_cuda_event_mpool_ops = {
 
 static void ucc_ec_cuda_graph_init(ucc_mpool_t *mp, void *obj, void *chunk) //NOLINT: mp is unused
 {
-    ucc_ec_cuda_executor_interruptible_task_t *task =
-         (ucc_ec_cuda_executor_interruptible_task_t *) obj;
-    cudaGraphNode_t memcpy_node;
-    int i;
+    // ucc_ec_cuda_executor_interruptible_task_t *task =
+    //      (ucc_ec_cuda_executor_interruptible_task_t *) obj;
+    // cudaGraphNode_t memcpy_node;
+    // int i;
 
-    CUDA_FUNC(cudaGraphCreate(&task->graph, 0));
-    for (i = 0; i < UCC_EE_EXECUTOR_MULTI_OP_NUM_BUFS; i++) {
-        CUDA_FUNC(
-            cudaGraphAddMemcpyNode1D(&memcpy_node, task->graph, NULL, 0,
-                                     (void*)1, (void*)1, 1, cudaMemcpyDefault));
-    }
+    // CUDA_FUNC(cudaGraphCreate(&task->graph, 0));
+    // for (i = 0; i < UCC_EE_EXECUTOR_MULTI_OP_NUM_BUFS; i++) {
+    //     CUDA_FUNC(
+    //         cudaGraphAddMemcpyNode1D(&memcpy_node, task->graph, NULL, 0,
+    //                                  (void*)1, (void*)1, 1, cudaMemcpyDefault));
+    // }
 
-    CUDA_FUNC(
-        cudaGraphInstantiateWithFlags(&task->graph_exec, task->graph, 0));
+    // CUDA_FUNC(
+    //     cudaGraphInstantiateWithFlags(&task->graph_exec, task->graph, 0));
+    (void)mp;
+    (void)obj;
+    (void)chunk;
 }
 
 static void ucc_ec_cuda_graph_cleanup(ucc_mpool_t *mp, void *obj) //NOLINT: mp is unused
 {
-    ucc_ec_cuda_executor_interruptible_task_t *task =
-         (ucc_ec_cuda_executor_interruptible_task_t *) obj;
+    // ucc_ec_cuda_executor_interruptible_task_t *task =
+    //      (ucc_ec_cuda_executor_interruptible_task_t *) obj;
 
-    CUDA_FUNC(cudaGraphExecDestroy(task->graph_exec));
-    CUDA_FUNC(cudaGraphDestroy(task->graph));
+    // CUDA_FUNC(cudaGraphExecDestroy(task->graph_exec));
+    // CUDA_FUNC(cudaGraphDestroy(task->graph));
+    (void)mp;
+    (void)obj;
 }
 
 static ucc_mpool_ops_t ucc_ec_cuda_interruptible_task_mpool_ops = {
