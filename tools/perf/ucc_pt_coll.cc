@@ -6,6 +6,7 @@
 
 #include "ucc_pt_coll.h"
 #include "ucc_pt_cuda.h"
+#include "ucc_pt_maca.h"
 #include "utils/ucc_malloc.h"
 
 ucc_status_t ucc_pt_alloc(ucc_mc_buffer_header_t **h_ptr, size_t len,
@@ -39,6 +40,34 @@ ucc_status_t ucc_pt_alloc(ucc_mc_buffer_header_t **h_ptr, size_t len,
         cuda_st = ucc_pt_cudaMemset((*h_ptr)->addr, 0, len);
         if (cuda_st != 0) {
             ucc_pt_cudaFree((*h_ptr)->addr);
+            delete *h_ptr;
+            return UCC_ERR_NO_MEMORY;
+        }
+        return UCC_OK;
+    case UCC_MEMORY_TYPE_MACA:
+        *h_ptr = new ucc_mc_buffer_header_t;
+        (*h_ptr)->mt = UCC_MEMORY_TYPE_MACA;
+        cuda_st = ucc_pt_mcMalloc(&((*h_ptr)->addr), len);
+        if (cuda_st != 0) {
+            return UCC_ERR_NO_MEMORY;
+        }
+        cuda_st = ucc_pt_mcMemset((*h_ptr)->addr, 0, len);
+        if (cuda_st != 0) {
+            ucc_pt_mcFree((*h_ptr)->addr);
+            delete *h_ptr;
+            return UCC_ERR_NO_MEMORY;
+        }
+        return UCC_OK;
+    case UCC_MEMORY_TYPE_MACA_MANAGED:
+        *h_ptr = new ucc_mc_buffer_header_t;
+        (*h_ptr)->mt = UCC_MEMORY_TYPE_MACA_MANAGED;
+        cuda_st = ucc_pt_mcMallocManaged(&((*h_ptr)->addr), len);
+        if (cuda_st != 0) {
+            return UCC_ERR_NO_MEMORY;
+        }
+        cuda_st = ucc_pt_mcMemset((*h_ptr)->addr, 0, len);
+        if (cuda_st != 0) {
+            ucc_pt_mcFree((*h_ptr)->addr);
             delete *h_ptr;
             return UCC_ERR_NO_MEMORY;
         }
@@ -79,6 +108,11 @@ ucc_status_t ucc_pt_free(ucc_mc_buffer_header_t *h_ptr)
         return UCC_OK;
     case UCC_MEMORY_TYPE_HOST:
         ucc_free(h_ptr->addr);
+        delete h_ptr;
+        return UCC_OK;
+    case UCC_MEMORY_TYPE_MACA:
+    case UCC_MEMORY_TYPE_MACA_MANAGED:
+        ucc_pt_mcFree(h_ptr->addr);
         delete h_ptr;
         return UCC_OK;
     default:

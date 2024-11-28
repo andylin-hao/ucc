@@ -15,6 +15,7 @@ ucc_perftest_SOURCES =             \
 	ucc_pt_comm.cc                 \
 	ucc_pt_cuda.cc                 \
 	ucc_pt_rocm.cc                 \
+	ucc_pt_maca.cc                 \
 	ucc_pt_benchmark.cc            \
 	ucc_pt_bootstrap_mpi.cc        \
 	ucc_pt_coll.cc                 \

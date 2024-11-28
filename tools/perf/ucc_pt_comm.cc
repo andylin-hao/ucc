@@ -5,6 +5,7 @@
 #include "ucc_perftest.h"
 #include "ucc_pt_cuda.h"
 #include "ucc_pt_rocm.h"
+#include "ucc_pt_maca.h"
 extern "C" {
 #include "utils/ucc_coll_utils.h"
 #include "components/mc/ucc_mc.h"
@@ -32,6 +33,10 @@ void ucc_pt_comm::set_gpu_device()
 
     if (ucc_pt_rocmGetDeviceCount(&dev_count) == 0 && dev_count != 0) {
         ucc_pt_rocmSetDevice(bootstrap->get_local_rank() % dev_count);
+    }
+
+    if (ucc_pt_mcGetDeviceCount(&dev_count) == 0 && dev_count != 0) {
+        ucc_pt_mcSetDevice(bootstrap->get_local_rank() % dev_count);
     }
 
     return;
@@ -68,6 +73,21 @@ ucc_ee_h ucc_pt_comm::get_ee()
                 ucc_pt_cudaStreamDestroy((cudaStream_t)stream);
                 throw std::runtime_error(ucc_status_string(status));
             }
+        } else if (cfg.mt == UCC_MEMORY_TYPE_MACA) {
+            if (ucc_pt_mcStreamCreateWithFlags((mcStream_t*)&stream,
+                                                 mcStreamNonBlocking)) {
+                throw std::runtime_error("failed to create MACA stream");
+            }
+            ee_params.ee_type         = UCC_EE_MACA_STREAM;
+            ee_params.ee_context_size = sizeof(mcStream_t);
+            ee_params.ee_context      = stream;
+            status = ucc_ee_create(team, &ee_params, &ee);
+            if (status != UCC_OK) {
+                std::cerr << "failed to create UCC EE: "
+                          << ucc_status_string(status);
+                ucc_pt_mcStreamDestroy((mcStream_t)stream);
+                throw std::runtime_error(ucc_status_string(status));
+            }
         } else {
             std::cerr << "execution engine is not supported for given memory type"
                       << std::endl;
@@ -91,6 +111,8 @@ ucc_ee_executor_t* ucc_pt_comm::get_executor()
             executor_params.ee_type = UCC_EE_CUDA_STREAM;
         } else if (cfg.mt == UCC_MEMORY_TYPE_ROCM) {
             executor_params.ee_type = UCC_EE_ROCM_STREAM;
+        } else if (cfg.mt == UCC_MEMORY_TYPE_MACA) {
+            executor_params.ee_type = UCC_EE_MACA_STREAM;
         } else {
             std::cerr << "executor is not supported for given memory type"
                       << std::endl;
@@ -198,6 +220,8 @@ ucc_status_t ucc_pt_comm::finalize()
 
         if (cfg.mt == UCC_MEMORY_TYPE_CUDA) {
             ucc_pt_cudaStreamDestroy((cudaStream_t)stream);
+        } else if (cfg.mt == UCC_MEMORY_TYPE_MACA) {
+            ucc_pt_mcStreamDestroy((mcStream_t)stream);
         } else {
             std::cerr << "execution engine is not supported for given memory type"
                       << std::endl;
