@@ -74,8 +74,8 @@ AS_IF([test "x$cuda_checked" != "xyes"],
 
         # Check nvml library
         AS_IF([test "x$cuda_happy" = "xyes" -a "x$nvml_happy" = "xyes"],
-              [AC_CHECK_LIB([nvidia-ml], [nvmlInit_v2],
-                            [NVML_LIBS="-lnvidia-ml -ldl"],
+              [AC_CHECK_LIB([ixml], [nvmlInit_v2],
+                            [NVML_LIBS="-lixml -ldl"],
                             [AS_IF([test "x$with_cuda" != "xguess"],
                                    [AC_MSG_WARN([libnvidia-ml not found. Install appropriate nvidia-driver package])])
                              nvml_happy="no"], [-ldl])])
