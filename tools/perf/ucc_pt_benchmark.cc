@@ -10,7 +10,6 @@
 #include "ucc_perftest.h"
 #include "utils/ucc_coll_utils.h"
 #include "core/ucc_ee.h"
-#include "ucc_pt_cuda.h"
 
 ucc_pt_benchmark::ucc_pt_benchmark(ucc_pt_benchmark_config cfg,
                                    ucc_pt_comm *communicator):
@@ -100,8 +99,6 @@ ucc_status_t ucc_pt_benchmark::run_bench() noexcept
 
     print_header();
     for (size_t cnt = min_count; cnt <= max_count; cnt *= 2) {
-        cudaStream_t stream;
-        ucc_pt_cudaStreamCreateWithFlags(&stream, cudaStreamNonBlocking);
         size_t coll_size = cnt * ucc_dt_size(config.dt);
         int iter = config.n_iter_small;
         int warmup = config.n_warmup_small;
