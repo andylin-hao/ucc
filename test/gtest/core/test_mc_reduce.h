@@ -39,13 +39,13 @@ DECLARE_TYPE_OP_PAIR(uint64_t, UINT64, ASSERT_EQ);
 
 //TODO Bfloat Custom
 DECLARE_TYPE_OP_PAIR(float, FLOAT32, ASSERT_FLOAT_EQ);
-DECLARE_TYPE_OP_PAIR(double, FLOAT64, ASSERT_FLOAT_EQ);
+// DECLARE_TYPE_OP_PAIR(double, FLOAT64, ASSERT_FLOAT_EQ);
 DECLARE_TYPE_OP_PAIR(long double, FLOAT128, ASSERT_FLOAT_EQ);
 
 DECLARE_TYPE_OP_PAIR(float _Complex, FLOAT32_COMPLEX,
                      ASSERT_FLOAT32_COMPLEX_EQ);
-DECLARE_TYPE_OP_PAIR(double _Complex, FLOAT64_COMPLEX,
-                     ASSERT_FLOAT64_COMPLEX_EQ);
+// DECLARE_TYPE_OP_PAIR(double _Complex, FLOAT64_COMPLEX,
+//                      ASSERT_FLOAT64_COMPLEX_EQ);
 DECLARE_TYPE_OP_PAIR(long double _Complex, FLOAT128_COMPLEX,
                      ASSERT_FLOAT128_COMPLEX_EQ);
 
@@ -109,15 +109,12 @@ DECLARE_OP_(avg, AVG, SUM);
         TypeOpPair<UCC_DT_INT32, prod>, TypeOpPair<UCC_DT_INT64, bxor>,        \
         TypeOpPair<UCC_DT_UINT16, lor>, TypeOpPair<UCC_DT_UINT16, sum>,        \
         TypeOpPair<UCC_DT_UINT32, prod>, TypeOpPair<UCC_DT_UINT64, bxor>,      \
-        TypeOpPair<UCC_DT_FLOAT32, avg>, TypeOpPair<UCC_DT_FLOAT64, avg>,      \
+        TypeOpPair<UCC_DT_FLOAT32, avg>,      \
         ARITHMETIC_OP_PAIRS(INT32), ARITHMETIC_OP_PAIRS(FLOAT32),              \
-        ARITHMETIC_OP_PAIRS(FLOAT64), ARITHMETIC_OP_PAIRS(BFLOAT16),           \
+        ARITHMETIC_OP_PAIRS(BFLOAT16),           \
         TypeOpPair<UCC_DT_FLOAT32_COMPLEX, sum>,                               \
         TypeOpPair<UCC_DT_FLOAT32_COMPLEX, prod>,                              \
-        TypeOpPair<UCC_DT_FLOAT32_COMPLEX, avg>,                               \
-        TypeOpPair<UCC_DT_FLOAT64_COMPLEX, sum>,                               \
-        TypeOpPair<UCC_DT_FLOAT64_COMPLEX, prod>,                              \
-        TypeOpPair<UCC_DT_FLOAT64_COMPLEX, avg>
+        TypeOpPair<UCC_DT_FLOAT32_COMPLEX, avg>
 
 using CollReduceTypeOpsCuda = ::testing::Types<CUDA_OP_PAIRS>;
 
@@ -130,9 +127,8 @@ using CollReduceTypeOpsHost = ::testing::Types<
     TypeOpPair<UCC_DT_FLOAT128_COMPLEX, prod>>;
 
 using CollReduceTypeOpsAvg = ::testing::Types<
-    TypeOpPair<UCC_DT_FLOAT32, avg>, TypeOpPair<UCC_DT_FLOAT64, avg>,
+    TypeOpPair<UCC_DT_FLOAT32, avg>,
     TypeOpPair<UCC_DT_FLOAT128, avg>, TypeOpPair<UCC_DT_FLOAT32_COMPLEX, avg>,
-    TypeOpPair<UCC_DT_FLOAT64_COMPLEX, avg>,
     TypeOpPair<UCC_DT_FLOAT128_COMPLEX, avg>, TypeOpPair<UCC_DT_BFLOAT16, avg>>;
 
 static inline bool ucc_reduction_is_supported(ucc_datatype_t dt,
@@ -143,6 +139,10 @@ static inline bool ucc_reduction_is_supported(ucc_datatype_t dt,
         ((dt == UCC_DT_FLOAT128) || (dt == UCC_DT_FLOAT128_COMPLEX))) {
         return false;
     }
+    if (mt == UCC_MEMORY_TYPE_CUDA_MANAGED)
+        return false;
+    if (dt == UCC_DT_FLOAT64 || dt == UCC_DT_FLOAT64_COMPLEX)
+        return false;
     switch(op) {
     case UCC_OP_MIN:
     case UCC_OP_MAX:

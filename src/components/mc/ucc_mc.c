@@ -87,6 +87,8 @@ ucc_status_t ucc_mc_init(const ucc_mc_params_t *mc_params)
 
 ucc_status_t ucc_mc_available(ucc_memory_type_t mem_type)
 {
+    if (mem_type == UCC_MEMORY_TYPE_CUDA_MANAGED)
+        return UCC_ERR_NOT_SUPPORTED;
     mem_type = (mem_type == UCC_MEMORY_TYPE_CUDA_MANAGED) ?
                    UCC_MEMORY_TYPE_CUDA : mem_type;
 

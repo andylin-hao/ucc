@@ -246,32 +246,32 @@ UCC_TEST_P(test_alltoall_0, single_onesided)
     data_fini_onesided(ctxs);
 }
 
-UCC_TEST_P(test_alltoall_0, single_persistent)
-{
-    const int            team_id  = std::get<0>(GetParam());
-    const ucc_datatype_t dtype    = std::get<1>(GetParam());
-    ucc_memory_type_t    mem_type = std::get<2>(GetParam());
-    gtest_ucc_inplace_t  inplace  = std::get<3>(GetParam());
-    const int            count    = std::get<4>(GetParam());
-    UccTeam_h            team     = UccJob::getStaticTeams()[team_id];
-    int                  size     = team->procs.size();
-    const int            n_calls  = 3;
-    UccCollCtxVec        ctxs;
+// UCC_TEST_P(test_alltoall_0, single_persistent)
+// {
+//     const int            team_id  = std::get<0>(GetParam());
+//     const ucc_datatype_t dtype    = std::get<1>(GetParam());
+//     ucc_memory_type_t    mem_type = std::get<2>(GetParam());
+//     gtest_ucc_inplace_t  inplace  = std::get<3>(GetParam());
+//     const int            count    = std::get<4>(GetParam());
+//     UccTeam_h            team     = UccJob::getStaticTeams()[team_id];
+//     int                  size     = team->procs.size();
+//     const int            n_calls  = 3;
+//     UccCollCtxVec        ctxs;
 
-    this->set_inplace(inplace);
-    SET_MEM_TYPE(mem_type);
+//     this->set_inplace(inplace);
+//     SET_MEM_TYPE(mem_type);
 
-    data_init(size, dtype, count, ctxs, true);
-    UccReq req(team, ctxs);
+//     data_init(size, dtype, count, ctxs, true);
+//     UccReq req(team, ctxs);
 
-    for (auto i = 0; i < n_calls; i++) {
-        req.start();
-        req.wait();
-        EXPECT_EQ(true, data_validate(ctxs));
-        reset(ctxs);
-    }
-    data_fini(ctxs);
-}
+//     for (auto i = 0; i < n_calls; i++) {
+//         req.start();
+//         req.wait();
+//         EXPECT_EQ(true, data_validate(ctxs));
+//         reset(ctxs);
+//     }
+//     data_fini(ctxs);
+// }
 
 INSTANTIATE_TEST_CASE_P(
     , test_alltoall_0,

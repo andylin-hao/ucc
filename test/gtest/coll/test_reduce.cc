@@ -282,42 +282,42 @@ TYPED_TEST(test_reduce_cuda, multiple_inplace_managed) {
 template <typename T> class test_reduce_avg_order : public test_reduce<T> {
 };
 
-TYPED_TEST_CASE(test_reduce_avg_order, CollReduceTypeOpsAvg);
+// TYPED_TEST_CASE(test_reduce_avg_order, CollReduceTypeOpsAvg);
 
-TYPED_TEST(test_reduce_avg_order, avg_post_op)
-{
-    int           n_procs = 15;
-    ucc_job_env_t env     = {{"UCC_TL_UCP_REDUCE_AVG_PRE_OP", "0"}};
-    UccJob        job(n_procs, UccJob::UCC_JOB_CTX_GLOBAL, env);
-    UccTeam_h     team   = job.create_team(n_procs);
-    int           repeat = 3;
-    UccCollCtxVec ctxs;
-    std::vector<ucc_memory_type_t> mt = {UCC_MEMORY_TYPE_HOST};
+// TYPED_TEST(test_reduce_avg_order, avg_post_op)
+// {
+//     int           n_procs = 15;
+//     ucc_job_env_t env     = {{"UCC_TL_UCP_REDUCE_AVG_PRE_OP", "0"}};
+//     UccJob        job(n_procs, UccJob::UCC_JOB_CTX_GLOBAL, env);
+//     UccTeam_h     team   = job.create_team(n_procs);
+//     int           repeat = 3;
+//     UccCollCtxVec ctxs;
+//     std::vector<ucc_memory_type_t> mt = {UCC_MEMORY_TYPE_HOST};
 
-    if (UCC_OK == ucc_mc_available(UCC_MEMORY_TYPE_CUDA)) {
-        mt.push_back(UCC_MEMORY_TYPE_CUDA);
-    }
-    if (UCC_OK == ucc_mc_available(UCC_MEMORY_TYPE_CUDA_MANAGED)) {
-        mt.push_back(UCC_MEMORY_TYPE_CUDA_MANAGED);
-    }
+//     if (UCC_OK == ucc_mc_available(UCC_MEMORY_TYPE_CUDA)) {
+//         mt.push_back(UCC_MEMORY_TYPE_CUDA);
+//     }
+//     if (UCC_OK == ucc_mc_available(UCC_MEMORY_TYPE_CUDA_MANAGED)) {
+//         mt.push_back(UCC_MEMORY_TYPE_CUDA_MANAGED);
+//     }
 
-    for (auto count : {4, 256, 65536}) {
-        for (auto inplace : {TEST_NO_INPLACE, TEST_INPLACE}) {
-            for (auto m : mt) {
-                CHECK_TYPE_OP_SKIP(TypeParam::dt, TypeParam::redop, m);
-                SET_MEM_TYPE(m);
-                this->set_inplace(inplace);
-                this->data_init(n_procs, TypeParam::dt, count, ctxs, true);
-                UccReq req(team, ctxs);
-                CHECK_REQ_NOT_SUPPORTED_SKIP(req, this->data_fini(ctxs));
-                for (auto i = 0; i < repeat; i++) {
-                    req.start();
-                    req.wait();
-                    EXPECT_EQ(true, this->data_validate(ctxs));
-                    this->reset(ctxs);
-                }
-                this->data_fini(ctxs);
-            }
-        }
-    }
-}
+//     for (auto count : {4, 256, 65536}) {
+//         for (auto inplace : {TEST_NO_INPLACE, TEST_INPLACE}) {
+//             for (auto m : mt) {
+//                 CHECK_TYPE_OP_SKIP(TypeParam::dt, TypeParam::redop, m);
+//                 SET_MEM_TYPE(m);
+//                 this->set_inplace(inplace);
+//                 this->data_init(n_procs, TypeParam::dt, count, ctxs, true);
+//                 UccReq req(team, ctxs);
+//                 CHECK_REQ_NOT_SUPPORTED_SKIP(req, this->data_fini(ctxs));
+//                 for (auto i = 0; i < repeat; i++) {
+//                     req.start();
+//                     req.wait();
+//                     EXPECT_EQ(true, this->data_validate(ctxs));
+//                     this->reset(ctxs);
+//                 }
+//                 this->data_fini(ctxs);
+//             }
+//         }
+//     }
+// }

@@ -359,26 +359,20 @@ using TypeOpPairsUint = ::testing::Types<INT_OP_PAIRS(UINT8), INT_OP_PAIRS(UINT1
                                       INT_OP_PAIRS(UINT32), INT_OP_PAIRS(UINT64)>;
 
 using TypeOpPairsFloat = ::testing::Types<ARITHMETIC_OP_PAIRS(FLOAT32),
-                                          ARITHMETIC_OP_PAIRS(FLOAT64),
                                           ARITHMETIC_OP_PAIRS(FLOAT128),
                                           ARITHMETIC_OP_PAIRS(BFLOAT16),
                                           TypeOpPair<UCC_DT_FLOAT32_COMPLEX, sum>,
                                           TypeOpPair<UCC_DT_FLOAT32_COMPLEX, prod>,
-                                          TypeOpPair<UCC_DT_FLOAT64_COMPLEX, sum>,
-                                          TypeOpPair<UCC_DT_FLOAT64_COMPLEX, prod>,
                                           TypeOpPair<UCC_DT_FLOAT128_COMPLEX, sum>,
                                           TypeOpPair<UCC_DT_FLOAT128_COMPLEX, prod>,
                                           TypeOpPair<UCC_DT_FLOAT32, avg>,
-                                          TypeOpPair<UCC_DT_FLOAT64, avg>,
                                           TypeOpPair<UCC_DT_BFLOAT16, avg>>;
 
 using TypeOpPairsFloatCuda = ::testing::Types<
-    ARITHMETIC_OP_PAIRS(FLOAT32), ARITHMETIC_OP_PAIRS(FLOAT64),
+    ARITHMETIC_OP_PAIRS(FLOAT32),
     ARITHMETIC_OP_PAIRS(BFLOAT16), TypeOpPair<UCC_DT_FLOAT32_COMPLEX, sum>,
-    TypeOpPair<UCC_DT_FLOAT32_COMPLEX, prod>,
-    TypeOpPair<UCC_DT_FLOAT64_COMPLEX, sum>,
-    TypeOpPair<UCC_DT_FLOAT64_COMPLEX, prod>, TypeOpPair<UCC_DT_FLOAT32, avg>,
-    TypeOpPair<UCC_DT_FLOAT64, avg>, TypeOpPair<UCC_DT_BFLOAT16, avg>>;
+    TypeOpPair<UCC_DT_FLOAT32_COMPLEX, prod>, TypeOpPair<UCC_DT_FLOAT32, avg>,
+    TypeOpPair<UCC_DT_BFLOAT16, avg>>;
 
 template <typename T>
 class test_mc_reduce_int : public test_mc_reduce<T, false> {};

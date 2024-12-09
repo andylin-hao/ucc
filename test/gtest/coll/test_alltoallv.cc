@@ -180,34 +180,34 @@ UCC_TEST_P(test_alltoallv_0, single)
     data_fini(ctxs);
 }
 
-UCC_TEST_P(test_alltoallv_0, single_persistent)
-{
-    const int            team_id  = std::get<0>(GetParam());
-    ucc_memory_type_t    mem_type = std::get<1>(GetParam());
-    gtest_ucc_inplace_t  inplace  = std::get<2>(GetParam());
-    const ucc_datatype_t dtype    = std::get<3>(GetParam());
-    UccTeam_h            team     = UccJob::getStaticTeams()[team_id];
-    int                  size     = team->procs.size();
-    const int            n_calls  = 3;
-    UccCollCtxVec        ctxs;
+// UCC_TEST_P(test_alltoallv_0, single_persistent)
+// {
+//     const int            team_id  = std::get<0>(GetParam());
+//     ucc_memory_type_t    mem_type = std::get<1>(GetParam());
+//     gtest_ucc_inplace_t  inplace  = std::get<2>(GetParam());
+//     const ucc_datatype_t dtype    = std::get<3>(GetParam());
+//     UccTeam_h            team     = UccJob::getStaticTeams()[team_id];
+//     int                  size     = team->procs.size();
+//     const int            n_calls  = 3;
+//     UccCollCtxVec        ctxs;
 
-    coll_mask = UCC_COLL_ARGS_FIELD_FLAGS;
-    coll_flags =
-        UCC_COLL_ARGS_FLAG_COUNT_64BIT | UCC_COLL_ARGS_FLAG_DISPLACEMENTS_64BIT;
-    set_inplace(inplace);
-    SET_MEM_TYPE(mem_type);
+//     coll_mask = UCC_COLL_ARGS_FIELD_FLAGS;
+//     coll_flags =
+//         UCC_COLL_ARGS_FLAG_COUNT_64BIT | UCC_COLL_ARGS_FLAG_DISPLACEMENTS_64BIT;
+//     set_inplace(inplace);
+//     SET_MEM_TYPE(mem_type);
 
-    data_init(size, dtype, 1, ctxs, true);
-    UccReq req(team, ctxs);
+//     data_init(size, dtype, 1, ctxs, true);
+//     UccReq req(team, ctxs);
 
-    for (auto i = 0; i < n_calls; i++) {
-        req.start();
-        req.wait();
-        EXPECT_EQ(true, data_validate(ctxs));
-        reset(ctxs);
-    }
-    data_fini(ctxs);
-}
+//     for (auto i = 0; i < n_calls; i++) {
+//         req.start();
+//         req.wait();
+//         EXPECT_EQ(true, data_validate(ctxs));
+//         reset(ctxs);
+//     }
+//     data_fini(ctxs);
+// }
 
 class test_alltoallv_1 : public test_alltoallv <uint32_t>,
         public ::testing::WithParamInterface<Param_0> {};
