@@ -44,7 +44,7 @@ ncclDataType_t ucc_to_nccl_dtype[] = {
         (ncclDataType_t)ncclDataTypeUnsupported,
     [UCC_DT_PREDEFINED_ID(UCC_DT_FLOAT128_COMPLEX)] =
         (ncclDataType_t)ncclDataTypeUnsupported,
-#if (CUDART_VERSION >= 11000) && (NCCL_VERSION_CODE >= NCCL_VERSION(2,10,3))
+#if (NCCL_VERSION_CODE >= NCCL_VERSION(2,10,3))
     [UCC_DT_PREDEFINED_ID(UCC_DT_BFLOAT16)] = (ncclDataType_t)ncclBfloat16,
 #else
     [UCC_DT_PREDEFINED_ID(UCC_DT_BFLOAT16)] =

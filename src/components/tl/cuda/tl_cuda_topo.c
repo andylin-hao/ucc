@@ -215,7 +215,6 @@ static ucc_status_t ucc_tl_cuda_topo_graph_create(ucc_tl_cuda_topo_t *topo)
 {
     ucc_status_t status = UCC_OK;
     nvmlDevice_t nvml_dev;
-    nvmlFieldValue_t nvml_value;
     nvmlPciInfo_t nvml_pci;
     ucc_tl_cuda_topo_dev_type_t dev_type;
     ucc_tl_cuda_device_pci_id_t pci_id;
@@ -255,7 +254,6 @@ static ucc_status_t ucc_tl_cuda_topo_graph_create(ucc_tl_cuda_topo_t *topo)
     }
     kh_init_inplace(bus_to_node, &topo->bus_to_node_hash);
     pthread_mutex_lock(&nvml_lock);
-    nvml_value.fieldId = NVML_FI_DEV_NVLINK_LINK_COUNT;
     for (i = 0; i < num_gpus; i++) {
         NVMLCHECK_GOTO(nvmlDeviceGetHandleByIndex(i, &nvml_dev),
                        exit_free_graph, status, topo->lib);
@@ -271,11 +269,8 @@ static ucc_status_t ucc_tl_cuda_topo_graph_create(ucc_tl_cuda_topo_t *topo)
         if (status != UCC_OK) {
             goto exit_free_graph;
         }
-        NVMLCHECK_GOTO(nvmlDeviceGetFieldValues(nvml_dev, 1, &nvml_value),
-                       exit_free_graph, status, topo->lib);
-        num_nvlinks = ((nvml_value.nvmlReturn == NVML_SUCCESS) &&
-                       (nvml_value.valueType == NVML_VALUE_TYPE_UNSIGNED_INT)) ?
-                      nvml_value.value.uiVal : 0;
+        // nvmlDeviceGetFieldValues(nvml_dev, 1, &nvml_value);
+        num_nvlinks = 0;
         for (link = 0; link < num_nvlinks; link++) {
             status = ucc_tl_cuda_topo_get_remote_dev_type(topo, nvml_dev, link,
                                                           &dev_type);
